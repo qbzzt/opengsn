@@ -19,14 +19,11 @@ contract NaivePaymaster is BasePaymaster {
 	// encodedFunction - bytes ?????
 	// relayData.senderAddress - the sender's address
 	function acceptRelayedCall(
-		GSNTypes.RelayRequest calldata relayRequest   // ,
-
-// We don't use approvalData and maxPossibleGas, so we don't need 
-// them in this Paymaster
-//
-//		bytes calldata approvalData,
-//		uint256 maxPossibleGas
+		GSNTypes.RelayRequest calldata relayRequest  ,
+		bytes calldata approvalData,
+		uint256 maxPossibleGas
 	) external view returns (bytes memory context) {
+		(approvalData, maxPossibleGas);  // avoid a warning
 		if (relayRequest.target != ourTarget)
 			revert();
 		
@@ -35,9 +32,22 @@ contract NaivePaymaster is BasePaymaster {
 		return abi.encode(relayRequest.relayData.senderAddress);
 	}
 
-// There are also preRelayedCall and postRelayedCall, which are called before
-// and after the call, for example for accounting purposes. However, this
-// naive paymaster does not need them.
+	function preRelayedCall(
+		bytes calldata context
+	) external relayHubOnly returns(bytes32) {
+		(context);
+		return bytes32(0);
+	}
+
+	function postRelayedCall(
+		bytes calldata context,
+		bool success,
+		bytes32 preRetVal,
+		uint256 gasUseExceptUs,
+		GSNTypes.GasData calldata gasData
+	) external relayHubOnly {
+		(context, success, preRetVal, gasUseExceptUs, gasData);
+	}
 
 } 
 
