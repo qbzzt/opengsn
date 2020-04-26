@@ -12,6 +12,10 @@ contract("LastCaller", async accounts => {
 		assert.equal(res2.logs[0].event, "LastCallerIs", "Wrong event");
 		assert.equal(res2.logs[0].args["0"], accounts[0], "Wrong second last caller");
 
+		const res3 = await lastcaller.getLastCaller();
+		assert.equal(res.logs[0].event, "LastCallerIs", "Wrong event");
+		assert.equal(res3.logs[0].args["0"], res2.logs[0].args["0"], 
+			"Wrong third last caller");
 
 	});
 });
