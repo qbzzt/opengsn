@@ -8,13 +8,6 @@ import "@opengsn/gsn/contracts/BasePaymaster.sol";
 contract NaivePaymaster is BasePaymaster {
 	address public ourTarget;   // The target contract we are willing to pay for
 
-	// emit a confirmation when you receive ether
-	event Received(uint eth);
-	function() external payable {
-		emit Received(msg.value);
-	}
-
-
 	// allow the owner to set ourTarget
 	event TargetSet(address target);
 	function setTarget(address target) external onlyOwner {
@@ -35,25 +28,20 @@ contract NaivePaymaster is BasePaymaster {
 	) external view returns (bytes memory context) {
 		(approvalData, maxPossibleGas);  // avoid a warning
 
-		bytes memory myContext;
-
 		require(relayRequest.target == ourTarget);
 
-		myContext = abi.encode(relayRequest.relayData.senderAddress);
-
-		// If we got here, we're successful. Return
-		// a context to identify this request
-		return myContext;
+		// If we got here, we're successful. Return the time
+		// to be able to match PreRelayed and PostRelayed events
+		return abi.encode(now);
 	}
 
-	event PreRelayed(bytes);
-	event PostRelayed(bytes);
+	event PreRelayed(uint);
+	event PostRelayed(uint);
 
 	function preRelayedCall(
 		bytes calldata context
 	) external relayHubOnly returns(bytes32) {
-		(context);
-		emit PreRelayed(context);
+		emit PreRelayed(abi.decode(context, (uint)));
 		return bytes32(0);
 	}
 
@@ -64,8 +52,8 @@ contract NaivePaymaster is BasePaymaster {
 		uint256 gasUseExceptUs,
 		GSNTypes.GasData calldata gasData
 	) external relayHubOnly {
-		(context, success, preRetVal, gasUseExceptUs, gasData);
-		emit PostRelayed(context);
+		(success, preRetVal, gasUseExceptUs, gasData);
+		emit PostRelayed(abi.decode(context, (uint)));
 	}
 
 } 
