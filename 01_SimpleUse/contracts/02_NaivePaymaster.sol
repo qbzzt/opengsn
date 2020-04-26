@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "@opengsn/gsn/contracts/BasePaymaster.sol";
 
 
+
 contract NaivePaymaster is BasePaymaster {
 	address public ourTarget;   // The target contract we are willing to pay for
 
@@ -13,10 +14,19 @@ contract NaivePaymaster is BasePaymaster {
 		emit Received(msg.value);
 	}
 
+
+	// allow the owner to set ourTarget
+	event TargetSet(address target);
+	function setTarget(address target) external onlyOwner {
+		ourTarget = target;
+		emit TargetSet(target);
+	}
+
+
 	// GNSTypes.RelayRequest is defined in GNSTypes.sol.
 	// The relevant fields for us are:
 	// target - the address of the target contract
-	// encodedFunction - bytes ?????
+	// encodedFunction - the called function's name and parameters
 	// relayData.senderAddress - the sender's address
 	function acceptRelayedCall(
 		GSNTypes.RelayRequest calldata relayRequest  ,
@@ -24,18 +34,26 @@ contract NaivePaymaster is BasePaymaster {
 		uint256 maxPossibleGas
 	) external view returns (bytes memory context) {
 		(approvalData, maxPossibleGas);  // avoid a warning
-		if (relayRequest.target != ourTarget)
-			revert();
-		
+
+		bytes memory myContext;
+
+		require(relayRequest.target == ourTarget);
+
+		myContext = abi.encode(relayRequest.relayData.senderAddress);
+
 		// If we got here, we're successful. Return
 		// a context to identify this request
-		return abi.encode(relayRequest.relayData.senderAddress);
+		return myContext;
 	}
+
+	event PreRelayed(bytes);
+	event PostRelayed(bytes);
 
 	function preRelayedCall(
 		bytes calldata context
 	) external relayHubOnly returns(bytes32) {
 		(context);
+		emit PreRelayed(context);
 		return bytes32(0);
 	}
 
@@ -47,6 +65,7 @@ contract NaivePaymaster is BasePaymaster {
 		GSNTypes.GasData calldata gasData
 	) external relayHubOnly {
 		(context, success, preRetVal, gasUseExceptUs, gasData);
+		emit PostRelayed(context);
 	}
 
 } 
