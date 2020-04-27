@@ -9,6 +9,10 @@ contract LastCaller is BaseRelayRecipient {
 
 	address lastCaller = address(0);
 
+	constructor(address _forwarder) public {
+		trustedForwarder = _forwarder;
+	}
+
 	function getLastCaller() external {
 		address previous = lastCaller;
 

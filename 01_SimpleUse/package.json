@@ -9,9 +9,11 @@
   "dependencies": {
 	"@opengsn/gsn": "*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "web3": "1.2.7"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "truffle test"
   },
   "author": "",
   "license": "ISC"
