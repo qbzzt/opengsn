@@ -1,11 +1,15 @@
+
+var HDWalletProvider = require('truffle-hdwallet-provider');
+var mnemonic = 'wild render law slight strike seven close damp glory jaguar dawn scan';
+var kovanUrl = "https://kovan.infura.io/v3/c3422181d0594697a38defe7706a1e5b";
+
+
 module.exports = {
-  // Uncommenting the defaults below 
-  // provides for an easier quick-start with Ganache.
-  // You can also follow this format for other networks;
-  // see <http://truffleframework.com/docs/advanced/configuration>
-  // for more details on how to specify configuration options!
-  //
   networks: {
+    kovan: {
+      provider: () => new HDWalletProvider(mnemonic, kovanUrl),
+      network_id: 42
+    },
     development: {
       host: "127.0.0.1",
       port: 8545,

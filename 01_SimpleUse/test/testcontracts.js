@@ -6,6 +6,7 @@ const LastCaller = artifacts.require('../contracts/LastCaller.sol')
 const NaivePaymaster = artifacts.require('NaivePaymaster')
 
 contract("LastCaller", async accounts => {
+
 	it ('text clause text', async () => {
 		const lastcaller = await LastCaller.new('0x0000000000000000000000000000000000000000');
 
@@ -23,6 +24,8 @@ contract("LastCaller", async accounts => {
 			"Wrong third last caller");
 
 	});
+
+
 
   describe('same with GSNDevProvider', function () {
     let gaslessAccount
@@ -86,5 +89,7 @@ contract("LastCaller", async accounts => {
       assert.equal(res.logs[0].args['0'].toLowerCase(), gaslessAccount.address.toLowerCase(), 'Wrong last caller')
     })
   })
+
+  
 })
 
