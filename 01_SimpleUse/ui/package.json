@@ -1,0 +1,15 @@
+{
+  "name": "gsn2-ui",
+  "version": "1.0.0",
+  "description": "A simple UI that uses the GSNv2 ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+        "@opengsn/gsn": "*",
+        "truffle-hdwallet-provider": "1.0.17"
+  },
+  "author": "",
+  "license": "ISC"
+}
