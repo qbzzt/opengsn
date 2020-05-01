@@ -39,7 +39,6 @@ const provider = new ethers.providers.Web3Provider(gsnProvider);
 
 
 
-const oriAddr =        "0xd02d72E067e77158444ef2020Ff2d325f929B363";
 const lastCallerAddr = conf.target;
 const lastCallerEvent = "0x5ee1172f7bf35b11d84dd4d05ae7f7a368d794d59b6701064b999a627584d287";
 
@@ -105,14 +104,14 @@ const gsnContractCall = async () => {
 	const transaction = await contract.getLastCaller();
 	const hash = transaction.hash;
 	console.log(`Transaction ${hash} sent`);
-//	const receipt = await provider.waitForTransaction(hash);
-//	console.log(`Mined in block: ${receipt.blockNumber}`);
-};   // normalContractCall
+	const receipt = await provider.waitForTransaction(hash);
+	console.log(`Mined in block: ${receipt.blockNumber}`);
+};   // gsnContractCall
 
 
 
 
-/*
+
 
 const listenToEvents = async () => {
 	// provider is good enough for a read 
@@ -120,22 +119,22 @@ const listenToEvents = async () => {
 	const contract = await new ethers.Contract(
 		lastCallerAddr, lastCallerAbi, provider);
 	const filter = {
-		address: lastCallerAddr,
-		topics: [ lastCallerEvent ]
+		address: lastCallerAddr
+//		topics: [ lastCallerEvent ]
 	};
 	provider.on(filter, res => {
 		console.log(`LastContract Event:`)
-		console.log(`Topics: ${res.topics}`);
+		console.log(`Topics: ${res.topics.map(
+			t => t === lastCallerEvent ? "LastCallerIs " : t)}`);
 		console.log(`Block #: ${res.blockNumber}`);
 		console.log(`Transaction hash: ${res.transactionHash}`);
 	});
 };  // listenToEvents
 
-*/
 
-gsnContractCall();
+window.app = {
+	gsnContractCall: gsnContractCall,
+	listenToEvents: listenToEvents,
+	target: conf.target
+};
 
-/*
-listenToEvents();
-
-*/
