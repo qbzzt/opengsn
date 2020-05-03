@@ -40,7 +40,6 @@ const provider = new ethers.providers.Web3Provider(gsnProvider);
 
 
 const lastCallerAddr = conf.target;
-const lastCallerEvent = "0x5ee1172f7bf35b11d84dd4d05ae7f7a368d794d59b6701064b999a627584d287";
 
 // Copied from build/contracts/LastCaller.json
 const lastCallerAbi =  [
@@ -98,6 +97,11 @@ const lastCallerAbi =  [
 
 
 const gsnContractCall = async () => {
+	if (provider._network.chainId != 42) {
+		alert("I only know the addresses for Kovan");
+		raise("Unknown network");
+	}
+
 	const contract = await new ethers.Contract(
 		lastCallerAddr, lastCallerAbi, provider.getSigner() );
 	await window.ethereum.enable();
@@ -118,22 +122,11 @@ const listenToEvents = async () => {
 	// only, which doesn't cost anything
 	const contract = await new ethers.Contract(
 		lastCallerAddr, lastCallerAbi, provider);
-	
-	contract.on(contract.interface.events.LastCallerIs, evt => 
+
+	contract.on(contract.interface.events.LastCallerIs, evt =>
 		console.log(`Event: ${JSON.stringify(evt)}`)
 	);
 
-/*
-	const filter = {
-		address: lastCallerAddr,
-		topics: [ lastCallerEvent ]
-	};
-	provider.on(contract.filters.LastCallerIs, res => {
-		console.log(`LastContract Event:`)
-		console.log(`Event: ${JSON.stringify(res)}`)
-	});
-
-*/
 };  // listenToEvents
 
 
@@ -142,6 +135,7 @@ window.app = {
 	listenToEvents: listenToEvents,
 	target: conf.target,
 	ethers: ethers,
+	provider: provider,
 	addr: lastCallerAddr,
 	abi: lastCallerAbi
 };
