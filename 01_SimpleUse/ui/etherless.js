@@ -118,23 +118,31 @@ const listenToEvents = async () => {
 	// only, which doesn't cost anything
 	const contract = await new ethers.Contract(
 		lastCallerAddr, lastCallerAbi, provider);
+	
+	contract.on(contract.interface.events.LastCallerIs, evt => 
+		console.log(`Event: ${JSON.stringify(evt)}`)
+	);
+
+/*
 	const filter = {
-		address: lastCallerAddr
-//		topics: [ lastCallerEvent ]
+		address: lastCallerAddr,
+		topics: [ lastCallerEvent ]
 	};
-	provider.on(filter, res => {
+	provider.on(contract.filters.LastCallerIs, res => {
 		console.log(`LastContract Event:`)
-		console.log(`Topics: ${res.topics.map(
-			t => t === lastCallerEvent ? "LastCallerIs " : t)}`);
-		console.log(`Block #: ${res.blockNumber}`);
-		console.log(`Transaction hash: ${res.transactionHash}`);
+		console.log(`Event: ${JSON.stringify(res)}`)
 	});
+
+*/
 };  // listenToEvents
 
 
 window.app = {
 	gsnContractCall: gsnContractCall,
 	listenToEvents: listenToEvents,
-	target: conf.target
+	target: conf.target,
+	ethers: ethers,
+	addr: lastCallerAddr,
+	abi: lastCallerAbi
 };
 

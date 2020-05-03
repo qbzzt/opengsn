@@ -15,7 +15,6 @@ contract NaivePaymaster is BasePaymaster {
 		emit TargetSet(target);
 	}
 
-
 	// GNSTypes.RelayRequest is defined in GNSTypes.sol.
 	// The relevant fields for us are:
 	// target - the address of the target contract
