@@ -1,7 +1,7 @@
 {
   "name": "gsn2-ui",
   "version": "1.0.0",
-  "description": "A simple UI that uses the GSNv2 ",
+  "description": "A simple UI that uses the GSNv2",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
