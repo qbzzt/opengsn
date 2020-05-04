@@ -48,7 +48,7 @@ contract NaivePaymaster is BasePaymaster {
 		bytes calldata context,
 		bool success,
 		bytes32 preRetVal,
-		uint256 gasUseExceptUs,
+		uint256 gasUse,
 		GSNTypes.GasData calldata gasData
 	) external relayHubOnly {
 		(success, preRetVal, gasUseExceptUs, gasData);
