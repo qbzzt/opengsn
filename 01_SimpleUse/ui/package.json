@@ -10,6 +10,6 @@
         "truffle-hdwallet-provider": "1.0.17"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
   "private": true
 }
