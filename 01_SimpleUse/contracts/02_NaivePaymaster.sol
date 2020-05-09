@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0 <0.6.0;
+pragma solidity ^0.6.2;
 pragma experimental ABIEncoderV2;
 
 import "@opengsn/gsn/contracts/BasePaymaster.sol";
