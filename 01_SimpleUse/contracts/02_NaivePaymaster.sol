@@ -24,7 +24,7 @@ contract NaivePaymaster is BasePaymaster {
 		GSNTypes.RelayRequest calldata relayRequest  ,
 		bytes calldata approvalData,
 		uint256 maxPossibleGas
-	) external view returns (bytes memory context) {
+	) external view override returns (bytes memory context) {
 		(approvalData, maxPossibleGas);  // avoid a warning
 
 		require(relayRequest.target == ourTarget);
@@ -39,7 +39,7 @@ contract NaivePaymaster is BasePaymaster {
 
 	function preRelayedCall(
 		bytes calldata context
-	) external relayHubOnly returns(bytes32) {
+	) external relayHubOnly override returns(bytes32) {
 		emit PreRelayed(abi.decode(context, (uint)));
 		return bytes32(0);
 	}
@@ -50,8 +50,8 @@ contract NaivePaymaster is BasePaymaster {
 		bytes32 preRetVal,
 		uint256 gasUse,
 		GSNTypes.GasData calldata gasData
-	) external relayHubOnly {
-		(success, preRetVal, gasUseExceptUs, gasData);
+	) external relayHubOnly override {
+		(success, preRetVal, gasUse, gasData);
 		emit PostRelayed(abi.decode(context, (uint)));
 	}
 
