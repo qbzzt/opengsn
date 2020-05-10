@@ -97,6 +97,8 @@ const lastCallerAbi =  [
 
 
 const gsnContractCall = async () => {
+	await window.ethereum.enable();
+
 	if (provider._network.chainId != 42) {
 		alert("I only know the addresses for Kovan");
 		raise("Unknown network");
@@ -104,7 +106,6 @@ const gsnContractCall = async () => {
 
 	const contract = await new ethers.Contract(
 		lastCallerAddr, lastCallerAbi, provider.getSigner() );
-	await window.ethereum.enable();
 	const transaction = await contract.getLastCaller();
 	const hash = transaction.hash;
 	console.log(`Transaction ${hash} sent`);
