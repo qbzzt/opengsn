@@ -1,4 +1,4 @@
-const blockchain = "http://chain:8545"
+const blockchain = "localhost"
 
 const gsn = require('@opengsn/gsn')
 
