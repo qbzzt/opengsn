@@ -1,4 +1,8 @@
 const ethers = require('ethers')
+const { RelayProvider } = require("@opengsn/gsn")
+const relayHubAddress = require('../build/gsn/RelayHub.json').address
+const stakeManagerAddress = require('../build/gsn/StakeManager.json').address
+const paymasterAddress = require('../build/gsn/Paymaster.json').address
 
 
 
@@ -10,8 +14,22 @@ let provider
 let network
 
 async function identifyNetwork () {
-  provider = new ethers.providers.Web3Provider(window.ethereum)
-  network = await provider.ready
+  const tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
+  network = await tmpProvider.ready
+  const gsnConfig = {
+    relayHubAddress,
+    paymasterAddress,
+    stakeManagerAddress,
+    gasPriceFactorPercent: 70,
+    methodSuffix: '_v4',
+    jsonStringifyRequest: true,
+    // TODO: this is actually a reported bug in MetaMask. Should be:
+    // chainId: network.chainId
+    // but chainID == networkId on top ethereum networks. See https://chainid.network/
+    chainId: window.ethereum.networkVersion
+  }
+  const gsnProvider = new RelayProvider(window.ethereum, gsnConfig);
+  provider = new ethers.providers.Web3Provider(gsnProvider)
   return network
 }
 
