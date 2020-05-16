@@ -114,6 +114,29 @@ const gsnContractCall = async () => {
 };   // gsnContractCall
 
 
+const gsnPaymasterRejection = async () => {
+	const badTarget = '0xCBC26C9b1BCb2613fd546F2A1c7f994C82745F20';
+
+	await window.ethereum.enable();
+
+	if (provider._network.chainId != 42) {
+		alert("I only know the addresses for Kovan");
+		raise("Unknown network");
+	}
+
+	const contract = await new ethers.Contract(
+		badTarget, lastCallerAbi, provider.getSigner() );
+	const transaction = await contract.getLastCaller();
+	const hash = transaction.hash;
+	console.log(`Transaction ${hash} sent`);
+	const receipt = await provider.waitForTransaction(hash);
+	console.log(`Mined in block: ${receipt.blockNumber}`);
+};   // gsPaymasterRejection
+
+
+
+
+
 
 
 
@@ -134,6 +157,7 @@ const listenToEvents = async () => {
 window.app = {
 	gsnContractCall: gsnContractCall,
 	listenToEvents: listenToEvents,
+	gsnPaymasterRejection: gsnPaymasterRejection, 
 	target: conf.target,
 	ethers: ethers,
 	provider: provider,
