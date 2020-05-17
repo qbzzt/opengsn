@@ -3,11 +3,11 @@ pragma solidity ^0.6.2;
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
 
-contract LastCaller is BaseRelayRecipient {
+contract CaptureTheFlag is BaseRelayRecipient {
 
-	event LastCallerIs(address);
+	event FlagCaptured(address _from, address _to);
 
-	address lastCaller = address(0);
+	address flagHolder = address(0);
 
 	// To use the GSNv2 forwarder on Kovan, call with
 	// 0x6453d37248ab2c16ebd1a8f782a2cbc65860e60b
@@ -15,15 +15,15 @@ contract LastCaller is BaseRelayRecipient {
 		trustedForwarder = _forwarder;
 	}
 
-	function getLastCaller() external {
-		address previous = lastCaller;
+	function captureFlag() external {
+		address previous = flagHolder;
 
 		// The real sender, which may not be the same as 
 		// msg.sender (if the transaction is sponsored by
 		// somebody else)
-		lastCaller = _msgSender();  
+		flagHolder = _msgSender();  
 
-		emit LastCallerIs(previous); 
+		emit FlagCaptured(previous, flagHolder); 
 	}
 } 
 

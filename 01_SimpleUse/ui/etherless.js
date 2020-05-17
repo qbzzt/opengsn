@@ -1,8 +1,9 @@
 const conf = {
-	target:    '0x7f5437b27478791642AE95Ce38b123b0107e0cEc',
-	paymaster: '0x0572dc46eb6edc950aa37c12fa9c862d4165cbc5',
-	relayhub:  '0x2E0d94754b348D208D64d52d78BcD443aFA9fa52',
-	stakemgr:  '0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8',
+	ourContract: '0x23Cd0E36bB4727550bc01Cd3A1E8931b6d7CC796',
+	notOurs:     '0x6969Bc71C8f631f6ECE03CE16FdaBE51ae4d66B1',
+	paymaster:   '0x0572dc46eb6edc950aa37c12fa9c862d4165cbc5',
+	relayhub:    '0x2E0d94754b348D208D64d52d78BcD443aFA9fa52',
+	stakemgr:    '0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8',
 	gasPrice:  20000000000   // 20 Gwei
 }
 
@@ -39,10 +40,10 @@ const provider = new ethers.providers.Web3Provider(gsnProvider);
 
 
 
-const lastCallerAddr = conf.target;
+const flagAddr = conf.ourContract;
 
-// Copied from build/contracts/LastCaller.json
-const lastCallerAbi =  [
+// Copied from build/contracts/CaptureTheFlag.json
+const flagAbi = [
     {
       "inputs": [
         {
@@ -51,7 +52,6 @@ const lastCallerAbi =  [
           "type": "address"
         }
       ],
-      "payable": false,
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
@@ -63,13 +63,18 @@ const lastCallerAbi =  [
           "internalType": "address",
           "name": "",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
-      "name": "LastCallerIs",
+      "name": "FlagCaptured",
       "type": "event"
     },
     {
-      "constant": true,
       "inputs": [],
       "name": "getTrustedForwarder",
       "outputs": [
@@ -79,21 +84,17 @@ const lastCallerAbi =  [
           "type": "address"
         }
       ],
-      "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "constant": false,
       "inputs": [],
-      "name": "getLastCaller",
+      "name": "captureFlag",
       "outputs": [],
-      "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ];
-
+  ];    // flagAbi
 
 
 const gsnContractCall = async () => {
@@ -105,8 +106,8 @@ const gsnContractCall = async () => {
 	}
 
 	const contract = await new ethers.Contract(
-		lastCallerAddr, lastCallerAbi, provider.getSigner() );
-	const transaction = await contract.getLastCaller();
+		flagAddr, flagAbi, provider.getSigner() );
+	const transaction = await contract.captureFlag();
 	const hash = transaction.hash;
 	console.log(`Transaction ${hash} sent`);
 	const receipt = await provider.waitForTransaction(hash);
@@ -115,9 +116,9 @@ const gsnContractCall = async () => {
 
 
 const gsnPaymasterRejection = async () => {
-	const badTarget = '0xCBC26C9b1BCb2613fd546F2A1c7f994C82745F20';
-
 	await window.ethereum.enable();
+
+	console.log('Trying to trick the paymaster');
 
 	if (provider._network.chainId != 42) {
 		alert("I only know the addresses for Kovan");
@@ -125,8 +126,8 @@ const gsnPaymasterRejection = async () => {
 	}
 
 	const contract = await new ethers.Contract(
-		badTarget, lastCallerAbi, provider.getSigner() );
-	const transaction = await contract.getLastCaller();
+		conf.notOurs, flagAbi, provider.getSigner() );
+	const transaction = await contract.captureFlag();
 	const hash = transaction.hash;
 	console.log(`Transaction ${hash} sent`);
 	const receipt = await provider.waitForTransaction(hash);
@@ -145,10 +146,11 @@ const listenToEvents = async () => {
 	// provider is good enough for a read 
 	// only, which doesn't cost anything
 	const contract = await new ethers.Contract(
-		lastCallerAddr, lastCallerAbi, provider);
+		flagAddr, flagAbi, provider);
 
-	contract.on(contract.interface.events.LastCallerIs, evt =>
-		console.log(`Event: ${JSON.stringify(evt)}`)
+	contract.on(contract.interface.events.FlagCaptured, 
+		evt => console.log(`Event: ${
+			JSON.stringify(contract.interface.parseLog(evt))}`)
 	);
 
 };  // listenToEvents
@@ -158,10 +160,11 @@ window.app = {
 	gsnContractCall: gsnContractCall,
 	listenToEvents: listenToEvents,
 	gsnPaymasterRejection: gsnPaymasterRejection, 
-	target: conf.target,
+	conf: conf,
 	ethers: ethers,
 	provider: provider,
-	addr: lastCallerAddr,
-	abi: lastCallerAbi
+	addr: flagAddr,
+	abi: flagAbi
 };
+
 

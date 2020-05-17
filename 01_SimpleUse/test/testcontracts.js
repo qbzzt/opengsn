@@ -10,12 +10,12 @@ const configureGSN = require('@opengsn/gsn/dist/src/relayclient/GSNConfigurator'
 
 const Web3 = require('web3')
 const ethers = require("ethers")
-const LastCaller = artifacts.require('LastCaller')
+const CaptureTheFlag = artifacts.require('CaptureTheFlag')
 const NaivePaymaster = artifacts.require('NaivePaymaster')
 
 
 const callThroughGsn = async (contract, provider) => {
-		const transaction = await contract.getLastCaller()
+		const transaction = await contract.captureFlag()
 		const receipt = await provider.waitForTransaction(transaction.hash)
 
 		const result = receipt.logs.
@@ -28,36 +28,37 @@ const callThroughGsn = async (contract, provider) => {
 
 
 
-contract("LastCaller", async accounts => {
+contract("CaptureTheFlag", async accounts => {
 
 	it ('Runs without GSN', async () => {
-		const lastcaller = await LastCaller.new('0x0000000000000000000000000000000000000000');
+		const flag = await CaptureTheFlag.new('0x0000000000000000000000000000000000000000');
 
-		const res = await lastcaller.getLastCaller();
-		assert.equal(res.logs[0].event, "LastCallerIs", "Wrong event");
+		const res = await flag.captureFlag();
+		assert.equal(res.logs[0].event, "FlagCaptured", "Wrong event");
 		assert.equal(res.logs[0].args["0"], 0, "Wrong initial last caller");
 
-		const res2 = await lastcaller.getLastCaller();
-		assert.equal(res2.logs[0].event, "LastCallerIs", "Wrong event");
+		const res2 = await flag.captureFlag();
+		assert.equal(res2.logs[0].event, "FlagCaptured", "Wrong event");
 		assert.equal(res2.logs[0].args["0"], accounts[0], "Wrong second last caller");
 
-		const res3 = await lastcaller.getLastCaller();
-		assert.equal(res.logs[0].event, "LastCallerIs", "Wrong event");
+		const res3 = await flag.captureFlag();
+		assert.equal(res3.logs[0].event, "FlagCaptured", "Wrong event");
 		assert.equal(res3.logs[0].args["0"], res2.logs[0].args["0"],
 			"Wrong third last caller");
 
 	});   // it 'Runs without GSN'
 
+
 	it ('Runs with GSN', async () => {
 		const gsnInstance = await gsnTestEnv.startGsn(blockchain);
 
-		const lastCaller = await 
-			LastCaller.new(gsnInstance.deploymentResult.forwarderAddress)
+		const flag = await
+			CaptureTheFlag.new(gsnInstance.deploymentResult.forwarderAddress)
 
 		const paymaster = await NaivePaymaster.new()
 		await paymaster.setRelayHub(gsnInstance.deploymentResult.relayHubAddress)
 		await paymaster.send(1e17)
-		await paymaster.setTarget(lastCaller.address)
+		await paymaster.setTarget(flag.address)
 
 
 		const gsnConfigParams = {
@@ -79,7 +80,7 @@ contract("LastCaller", async accounts => {
 
 
 		const acct = provider.provider.newAccount()
-		const contract = await new ethers.Contract(lastCaller.address, lastCaller.abi,
+		const contract = await new ethers.Contract(flag.address, flag.abi,
 			provider.getSigner(acct.address, acct.privateKey))
 
 		var result = await callThroughGsn(contract, provider);
@@ -91,13 +92,13 @@ contract("LastCaller", async accounts => {
 
 
 		const acct2 = provider.provider.newAccount()
-		const contract2 = await new ethers.Contract(lastCaller.address, lastCaller.abi,
+		const contract2 = await new ethers.Contract(flag.address, flag.abi,
 			provider.getSigner(acct2.address, acct2.privateKey))
 
 
 		var result = await callThroughGsn(contract2, provider);
 		assert.equal(result.toLowerCase(), acct.address.toLowerCase(), 
-			"Wrong third last caller (should be acct)");		
+			"Wrong third last caller (should be acct)");
 
 
 		var result = await callThroughGsn(contract, provider);
@@ -106,6 +107,8 @@ contract("LastCaller", async accounts => {
 
 
 	});   // it 'Runs with GSN'
+
+
 
 });   // describe
 
