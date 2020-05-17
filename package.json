@@ -18,8 +18,7 @@
     "ganache": "yarn run ganache-cli -d",
     "test": "truffle test",
     "compile": "truffle compile",
-    "deploy": "truffle deploy",
-    "start": "yarn compile && ./ui/compile.sh && yarn serve ./html"
+    "start": "yarn compile && truffle deploy && ./ui/compile.sh && yarn serve ./html"
   },
   "author": "",
   "license": "ISC"

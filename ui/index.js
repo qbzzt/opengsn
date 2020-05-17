@@ -1,9 +1,10 @@
 const ethers = require('ethers')
 
 
-const contractAddress = '0xCfEB869F69431e42cdB54A4F4f105C19C080A601'
 
-const contractAbi = require('../build/contracts/CaptureTheFlag.json').abi
+const contractArtifact = require('../build/contracts/CaptureTheFlag.json')
+const contractAddress = contractArtifact.networks[window.ethereum.networkVersion].address
+const contractAbi = contractArtifact.abi
 
 let provider
 let network
