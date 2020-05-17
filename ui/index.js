@@ -11,7 +11,7 @@ const contractArtifact = require('../build/contracts/CaptureTheFlag.json')
 const contractAddress = contractArtifact.networks[window.ethereum.networkVersion].address
 const contractAbi = contractArtifact.abi
 
-const paymasterArtifact = require('../build/contracts/CaptureTheFlag.json')
+const paymasterArtifact = require('../build/contracts/WhitelistPaymaster.json')
 const whitelistPaymasterAddress = paymasterArtifact.networks[window.ethereum.networkVersion].address
 
 let provider
