@@ -20,7 +20,6 @@ async function identifyNetwork () {
     relayHubAddress,
     paymasterAddress,
     stakeManagerAddress,
-    gasPriceFactorPercent: 70,
     methodSuffix: '_v4',
     jsonStringifyRequest: true,
     // TODO: this is actually a reported bug in MetaMask. Should be:
