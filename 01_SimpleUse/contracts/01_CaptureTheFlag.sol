@@ -19,9 +19,8 @@ contract CaptureTheFlag is BaseRelayRecipient {
 	function captureFlag() external {
 		address previous = flagHolder;
 
-		// The real sender, which may not be the same as 
-		// msg.sender (if the transaction is sponsored by
-		// somebody else)
+                // The real sender. If you are using GSNv2, this
+                // is not the same as msg.sender.
 		flagHolder = _msgSender();  
 
 		emit FlagCaptured(previous, flagHolder); 
