@@ -9,8 +9,9 @@ contract CaptureTheFlag is BaseRelayRecipient {
 
 	address flagHolder = address(0);
 
-	// To use the GSNv2 forwarder on Kovan, call with
-	// 0x6453d37248ab2c16ebd1a8f782a2cbc65860e60b
+        // Get the forwarder address for the network
+        // you are using from
+        // https://docs.opengsn.org/gsn-provider/networks.html
 	constructor(address _forwarder) public {
 		trustedForwarder = _forwarder;
 	}
