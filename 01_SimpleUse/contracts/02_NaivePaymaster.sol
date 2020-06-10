@@ -1,6 +1,8 @@
 pragma solidity ^0.6.2;
 pragma experimental ABIEncoderV2;
 
+// SPDX-License-Identifier: MIT OR Apache-2.0
+
 import "@opengsn/gsn/contracts/BasePaymaster.sol";
 
 
@@ -21,11 +23,12 @@ contract NaivePaymaster is BasePaymaster {
 	// encodedFunction - the called function's name and parameters
 	// relayData.senderAddress - the sender's address
 	function acceptRelayedCall(
-		GSNTypes.RelayRequest calldata relayRequest  ,
+		GSNTypes.RelayRequest calldata relayRequest,
+		bytes calldata signature,
 		bytes calldata approvalData,
 		uint256 maxPossibleGas
 	) external view override returns (bytes memory context) {
-		(approvalData, maxPossibleGas);  // avoid a warning
+		(signature, approvalData, maxPossibleGas);  // avoid a warning
 
 		require(relayRequest.target == ourTarget);
 
@@ -54,6 +57,10 @@ contract NaivePaymaster is BasePaymaster {
 		(success, preRetVal, gasUse, gasData);
 		emit PostRelayed(abi.decode(context, (uint)));
 	}
+
+        function versionPaymaster() external virtual view override returns (string memory) {
+                return "1.0";
+        }
 
 } 
 
