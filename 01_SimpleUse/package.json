@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@opengsn/gsn": "^0.10.0",
+    "ethers": "^4.0.0",
     "truffle-hdwallet-provider": "1.0.17"
   },
   "devDependencies": {

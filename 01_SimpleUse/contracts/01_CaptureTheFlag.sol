@@ -3,9 +3,9 @@ pragma solidity ^0.6.2;
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
+import "@opengsn/gsn/contracts/interfaces/IKnowForwarderAddress.sol";
 
-
-contract CaptureTheFlag is BaseRelayRecipient {
+contract CaptureTheFlag is BaseRelayRecipient, IKnowForwarderAddress {
 
 	event FlagCaptured(address _from, address _to);
 
@@ -31,5 +31,10 @@ contract CaptureTheFlag is BaseRelayRecipient {
 	function versionRecipient() external virtual view override returns (string memory) {
 		return "1.0";
 	}
-} 
+
+	function getTrustedForwarder() public override view returns(address) {
+		return trustedForwarder;
+	}
+}
+ 
 
