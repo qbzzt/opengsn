@@ -58,7 +58,8 @@ contract NaivePaymaster is BasePaymaster {
 		emit PostRelayed(abi.decode(context, (uint)));
 	}
 
-        function versionPaymaster() external virtual view override returns (string memory) {
+        function versionPaymaster() external virtual view 
+	override returns (string memory) {
                 return "1.0";
         }
 
