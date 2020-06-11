@@ -28,11 +28,13 @@ contract CaptureTheFlag is BaseRelayRecipient, IKnowForwarderAddress {
 		emit FlagCaptured(previous, flagHolder); 
 	}
 
-	function versionRecipient() external virtual view override returns (string memory) {
+	function versionRecipient() external virtual view 
+	override returns (string memory) {
 		return "1.0";
 	}
 
-	function getTrustedForwarder() public override view returns(address) {
+	function getTrustedForwarder() public view 
+	override returns(address) {
 		return trustedForwarder;
 	}
 }
