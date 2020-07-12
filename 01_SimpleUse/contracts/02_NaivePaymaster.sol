@@ -27,7 +27,7 @@ contract NaivePaymaster is BasePaymaster {
 		bytes calldata signature,
 		bytes calldata approvalData,
 		uint256 maxPossibleGas
-	) external view override returns (bytes memory context) {
+	) external view override returns (bytes memory) {
 		(signature, approvalData, maxPossibleGas);  // avoid a warning
 
 		require(relayRequest.target == ourTarget);
@@ -58,12 +58,8 @@ contract NaivePaymaster is BasePaymaster {
 		emit PostRelayed(abi.decode(context, (uint)));
 	}
 
-        function versionPaymaster() external virtual view 
-	override returns (string memory) {
-                return "1.0";
-        }
+  function versionPaymaster() external virtual view override returns (string memory) {
+    return "1.0";
+  }
 
-} 
-
-
-
+}
