@@ -15,7 +15,7 @@
     "web3": "1.2.7"
   },
   "scripts": {
-    "test": "truffle test"
+    "test": "./scripts/launch.sh npx truffle test"
   },
   "author": "",
   "license": "ISC"
