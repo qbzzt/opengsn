@@ -23,8 +23,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.6.2",
-      docker: true
+      version: "0.6.2"
    }
  }
 };
