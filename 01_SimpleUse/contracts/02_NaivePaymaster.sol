@@ -32,6 +32,10 @@ contract NaivePaymaster is BasePaymaster {
 		_verifyForwarder(relayRequest);
 		(signature, approvalData, maxPossibleGas);
 		emit PreRelayed(abi.decode(approvalData, (uint)));
+		
+		require(relayRequest.request.to == ourTarget,
+			"Not willing to pay for this destination");
+
                 return ("ok, I'll pay for this", false);
 	}
 
