@@ -28,15 +28,13 @@ contract NaivePaymaster is BasePaymaster {
 		bytes calldata approvalData,
 		uint256 maxPossibleGas
 	) external override virtual
-	returns (bytes memory, bool) {
+	returns (bytes memory context, bool) {
 		_verifyForwarder(relayRequest);
 		(signature, approvalData, maxPossibleGas);
-		emit PreRelayed(abi.decode(approvalData, (uint)));
 		
-		require(relayRequest.request.to == ourTarget,
-			"Not willing to pay for this destination");
-
-                return ("ok, I'll pay for this", false);
+		require(relayRequest.request.to == ourTarget);
+		emit PreRelayed(now);
+                return (abi.encode(now), false);
 	}
 
 	function postRelayedCall(

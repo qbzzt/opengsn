@@ -1,8 +1,7 @@
 
 var HDWalletProvider = require('truffle-hdwallet-provider');
 var mnemonic = 'wild render law slight strike seven close damp glory jaguar dawn scan';
-var kovanUrl = "https://kovan.infura.io/v3/c3422181d0594697a38defe7706a1e5b";
-
+var kovanUrl = "https://kovan.infura.io/v3/455c4353c93d4b0092c542f38cceed41";
 
 module.exports = {
   networks: {
