@@ -1,8 +1,9 @@
-pragma solidity ^0.6.2;
+pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
+import "@opengsn/gsn/contracts/forwarder/IForwarder.sol";
 import "@opengsn/gsn/contracts/BasePaymaster.sol";
 
 
@@ -17,44 +18,30 @@ contract NaivePaymaster is BasePaymaster {
 		emit TargetSet(target);
 	}
 
-	// GNSTypes.RelayRequest is defined in GNSTypes.sol.
-	// The relevant fields for us are:
-	// target - the address of the target contract
-	// encodedFunction - the called function's name and parameters
-	// relayData.senderAddress - the sender's address
-	function acceptRelayedCall(
-		GSNTypes.RelayRequest calldata relayRequest,
-		bytes calldata signature,
-		bytes calldata approvalData,
-		uint256 maxPossibleGas
-	) external view override returns (bytes memory) {
-		(signature, approvalData, maxPossibleGas);  // avoid a warning
-
-		require(relayRequest.target == ourTarget);
-
-		// If we got here, we're successful. Return the time
-		// to be able to match PreRelayed and PostRelayed events
-		return abi.encode(now);
-	}
-
 	event PreRelayed(uint);
 	event PostRelayed(uint);
 
+
 	function preRelayedCall(
-		bytes calldata context
-	) external relayHubOnly override returns(bytes32) {
-		emit PreRelayed(abi.decode(context, (uint)));
-		return bytes32(0);
+		GsnTypes.RelayRequest calldata relayRequest,
+		bytes calldata signature,
+		bytes calldata approvalData,
+		uint256 maxPossibleGas
+	) external override virtual
+	returns (bytes memory, bool) {
+		_verifyForwarder(relayRequest);
+		(signature, approvalData, maxPossibleGas);
+		emit PreRelayed(abi.decode(approvalData, (uint)));
+                return ("ok, I'll pay for this", false);
 	}
 
 	function postRelayedCall(
 		bytes calldata context,
 		bool success,
-		bytes32 preRetVal,
-		uint256 gasUse,
-		GSNTypes.GasData calldata gasData
-	) external relayHubOnly override {
-		(success, preRetVal, gasUse, gasData);
+		uint256 gasUseWithoutPost,
+		GsnTypes.RelayData calldata relayData
+	) external override virtual {
+                (context, success, gasUseWithoutPost, relayData);
 		emit PostRelayed(abi.decode(context, (uint)));
 	}
 
