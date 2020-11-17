@@ -6,37 +6,31 @@ import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "@opengsn/gsn/contracts/interfaces/IKnowForwarderAddress.sol";
 
 contract CaptureTheFlag is BaseRelayRecipient, IKnowForwarderAddress {
-	address flagHolder = address(0);
+	string public override versionRecipient = "2.0.0";
+
 	event FlagCaptured(address _from, address _to);
 
-	constructor(address forwarder) public {
-		setTrustedForwarder(forwarder);
-	}
+	address flagHolder = address(0);
 
-	function getTrustedForwarder() public override view returns(address) {
-		return trustedForwarder;
+        // Get the forwarder address for the network
+        // you are using from
+        // https://docs.opengsn.org/gsn-provider/networks.html
+	constructor(address _forwarder) public {
+		trustedForwarder = _forwarder;
 	}
-
-	function setTrustedForwarder(address forwarder) internal {
-		trustedForwarder = forwarder;
-	}
-
 
 	function captureFlag() external {
 		address previous = flagHolder;
 
-                // The real sender. If you are using GSNv2, this
+                // The real sender. If you are using GSN, this
                 // is not the same as msg.sender.
-		flagHolder = _msgSender();  
+		flagHolder = _msgSender();
 
-		emit FlagCaptured(previous, flagHolder); 
+		emit FlagCaptured(previous, flagHolder);
 	}
 
-	function versionRecipient() external virtual view 
-	override returns (string memory) {
-		return "1.0";
+	function getTrustedForwarder() public view
+	override returns(address) {
+		return trustedForwarder;
 	}
-
 }
- 
-
