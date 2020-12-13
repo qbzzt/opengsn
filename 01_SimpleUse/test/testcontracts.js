@@ -95,7 +95,6 @@ contract("CaptureTheFlag", async accounts => {
 		var result = await callThroughGsn(contract, provider);
 		assert.equal(result, 0, "Wrong initial last caller");
 
-/*
 		var result = await callThroughGsn(contract, provider);
 		assert.equal(result.toLowerCase(), acct.address.toLowerCase(),
 			"Wrong second last caller (should be acct)");
@@ -107,7 +106,6 @@ contract("CaptureTheFlag", async accounts => {
 		var result = await callThroughGsn(contract, provider);
 		assert.equal(result.toLowerCase(), acct2.address.toLowerCase(),
 			"Wrong fourth last caller (should be acct2)");
-*/
 	});   // it 'Runs with GSN'
 });   // describe
 
