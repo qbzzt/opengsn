@@ -48,7 +48,7 @@ contract NaivePaymaster is BasePaymaster {
 	}
 
   function versionPaymaster() external virtual view override returns (string memory) {
-    return "1.0";
+    return "2.0.3";
   }
 
 }
