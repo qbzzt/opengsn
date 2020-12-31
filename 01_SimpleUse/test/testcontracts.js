@@ -43,7 +43,7 @@ contract("CaptureTheFlag", async accounts => {
 	it ('Runs with GSN', async () => {
 		let env = await GsnTestEnvironment.startGsn('localhost')
 
-		const { forwarderAddress } = env.deploymentResult
+		const { forwarderAddress } = env.contractsDeployment
 		const web3provider = new Web3HttpProvider('http://localhost:8545')
 		const deploymentProvider = new ethers.providers.Web3Provider(web3provider)
 
