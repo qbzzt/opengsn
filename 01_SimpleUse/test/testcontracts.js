@@ -1,4 +1,4 @@
-const { RelayProvider, resolveConfigurationGSN } = require('@opengsn/gsn')
+const { RelayProvider } = require('@opengsn/gsn')
 const { GsnTestEnvironment } = require('@opengsn/gsn/dist/GsnTestEnvironment' )
 const ethers = require('ethers')
 
@@ -43,7 +43,7 @@ contract("CaptureTheFlag", async accounts => {
 	it ('Runs with GSN', async () => {
 		let env = await GsnTestEnvironment.startGsn('localhost')
 
-		const { forwarderAddress } = env.contractsDeployment
+		const { forwarderAddress , relayHubAddress } = env.contractsDeployment
 		const web3provider = new Web3HttpProvider('http://localhost:8545')
 		const deploymentProvider = new ethers.providers.Web3Provider(web3provider)
 
@@ -65,7 +65,7 @@ contract("CaptureTheFlag", async accounts => {
                 const paymaster = await paymasterFactory.deploy()
                 await paymaster.deployed()
                 await paymaster.setTarget(flag.address)
-	        await paymaster.setRelayHub(env.contractsDeployment.relayHubAddress)
+	        await paymaster.setRelayHub(relayHubAddress)
                 await paymaster.setTrustedForwarder(forwarderAddress)
 
 		web3.eth.sendTransaction({
