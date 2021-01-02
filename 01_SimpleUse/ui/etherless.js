@@ -8,8 +8,6 @@ const conf = {
 	ourContract: '0x10A51A94d096e746E1Aec1027A0F8deCEC43FF63',
 	notOurs:     '0x6969Bc71C8f631f6ECE03CE16FdaBE51ae4d66B1',
 	paymaster:   '0x3f84367c25dC11A7aBE4B9ef97AB78d5D5498bF5',
-	relayhub:    '0xE9dcD2CccEcD77a92BA48933cb626e04214Edb92',
-        forwarder:   '0x0842Ad6B8cb64364761C7c170D0002CC56b1c498',
 	gasPrice:  20000000000   // 20 Gwei
 }
 
@@ -18,17 +16,16 @@ var provider
 var userAddr   // The user's address
 
 
-const startGsn = async () => {
+const connect2Gsn = async () => {
 	await window.ethereum.enable()
 
 	if (provider != undefined)
 		return;
 
+  	let gsnProvider = await gsn.RelayProvider.newProvider({
+		provider: window.web3.currentProvider,
+		config: { paymasterAddress: conf.paymaster } }).init()
 
-        let gsnProvider = await new gsn.RelayProvider(window.ethereum, {
-		forwarderAddress: conf.forwarder,
-            	paymasterAddress: conf.paymaster,
-                verbose: false}).init()
 	provider = new ethers.providers.Web3Provider(gsnProvider)
 	userAddr = gsnProvider.origProvider.selectedAddress
 
@@ -135,8 +132,9 @@ data = {
 
 
 const gsnContractCall = async () => {
-	await startGsn()
+	await connect2Gsn()
 	await provider.ready
+
 	if (provider._network.chainId != 42) {
 		alert("I only know the addresses for Kovan")
 		raise("Unknown network")
@@ -156,7 +154,7 @@ const gsnContractCall = async () => {
 
 
 const gsnPaymasterRejection = async () => {
-	await startGsn()
+	await connect2Gsn()
 
 	console.log('Trying to trick the paymaster')
 
@@ -172,7 +170,7 @@ const gsnPaymasterRejection = async () => {
 	console.log(`Transaction ${hash} sent`)
 	const receipt = await provider.waitForTransaction(hash)
 	console.log(`Mined in block: ${receipt.blockNumber}`)
-};   // gsPaymasterRejection
+};   // gsnPaymasterRejection
 
 
 
@@ -183,7 +181,7 @@ const gsnPaymasterRejection = async () => {
 
 
 const listenToEvents = async () => {
-	await startGsn()
+	await connect2Gsn()
 
 	const contract = await new ethers.Contract(
 		conf.ourContract, data.abi, provider);
@@ -207,4 +205,4 @@ window.app = {
 	provider: provider,
 	abi: data.abi,
 	gsn: gsn
-};
+}
