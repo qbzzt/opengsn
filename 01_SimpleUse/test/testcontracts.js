@@ -65,7 +65,7 @@ contract("CaptureTheFlag", async accounts => {
                 const paymaster = await paymasterFactory.deploy()
                 await paymaster.deployed()
                 await paymaster.setTarget(flag.address)
-	        await paymaster.setRelayHub(env.deploymentResult.relayHubAddress)
+	        await paymaster.setRelayHub(env.contractsDeployment.relayHubAddress)
                 await paymaster.setTrustedForwarder(forwarderAddress)
 
 		web3.eth.sendTransaction({
@@ -73,13 +73,11 @@ contract("CaptureTheFlag", async accounts => {
 			to:paymaster.address,
 			value:1e18})
 
-                let gsnProvider = await
-                    new RelayProvider(web3provider, {
-            		forwarderAddress,
-            		paymasterAddress: paymaster.address,
-                        verbose: false}).init()
+                let gsnProvider =
+                       await RelayProvider.newProvider({
+				provider: web3.currentProvider,
+				config: { paymasterAddress: paymaster.address} }).init()
 
-        	// gsnProvider is now an rpc provider with GSN support. make it an ethers provider:
         	const provider = new ethers.providers.Web3Provider(gsnProvider)
 
 		const acct = provider.provider.newAccount()
