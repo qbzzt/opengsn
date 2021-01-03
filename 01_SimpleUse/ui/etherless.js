@@ -153,32 +153,6 @@ const gsnContractCall = async () => {
 
 
 
-const gsnPaymasterRejection = async () => {
-	await connect2Gsn()
-
-	console.log('Trying to trick the paymaster')
-
-	if (provider._network.chainId != 42) {
-		alert("I only know the addresses for Kovan")
-		raise("Unknown network")
-	}
-
-	const contract = await new ethers.Contract(
-		conf.notOurs, data.abi, provider.getSigner(userAddr))
-	const transaction = await contract.captureFlag()
-	const hash = transaction.hash
-	console.log(`Transaction ${hash} sent`)
-	const receipt = await provider.waitForTransaction(hash)
-	console.log(`Mined in block: ${receipt.blockNumber}`)
-};   // gsnPaymasterRejection
-
-
-
-
-
-
-
-
 
 const listenToEvents = async () => {
 	await connect2Gsn()
@@ -199,7 +173,6 @@ const listenToEvents = async () => {
 window.app = {
 	gsnContractCall: gsnContractCall,
 	listenToEvents: listenToEvents,
-	gsnPaymasterRejection: gsnPaymasterRejection,
 	conf: conf,
 	ethers: ethers,
 	provider: provider,

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "@opengsn/gsn": "^2.0.0-beta.1.3",
+    "@opengsn/gsn": "^2.1.0",
     "ethers": "^4.0.0",
     "truffle-hdwallet-provider": "1.0.17"
   },
